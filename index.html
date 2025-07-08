@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorcycle Plate Recognition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dropzone {
+            border: 2px dashed #3b82f6;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .dropzone.active {
+            border-color: #10b981;
+            background-color: #f0f9ff;
+        }
+        .plate-display {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.2em;
+        }
+        .camera-view {
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 0.5rem;
+            background-color: #e5e7eb;
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
+                <i class="fas fa-motorcycle mr-2"></i>Motorcycle Plate Recognition
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                Upload an image of a motorcycle license plate and our AI will automatically detect and recognize the plate number.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Upload Section -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-upload mr-2 text-blue-500"></i>Upload Image
+                </h2>
+                
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <button id="uploadBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg flex items-center justify-center transition">
+                        <i class="fas fa-image mr-2"></i> Select Image
+                    </button>
+                    <button id="cameraBtn" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg flex items-center justify-center transition">
+                        <i class="fas fa-camera mr-2"></i> Use Camera
+                    </button>
+                </div>
+                
+                <div id="dropzone" class="dropzone p-8 text-center cursor-pointer mb-6">
+                    <div class="flex flex-col items-center justify-center">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-3"></i>
+                        <p class="text-gray-600 mb-1">Drag & drop your image here</p>
+                        <p class="text-sm text-gray-500">or click to browse files</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+                
+                <div id="previewContainer" class="hidden mb-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Image Preview</h3>
+                    <div class="relative">
+                        <img id="imagePreview" src="#" alt="Preview" class="w-full h-auto rounded-lg border border-gray-200">
+                        <button id="clearPreview" class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button id="processBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg flex items-center justify-center transition hidden">
+                    <i class="fas fa-cogs mr-2"></i> Process Image
+                </button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-search mr-2 text-blue-500"></i>Recognition Results
+                </h2>
+                
+                <div id="loadingSection" class="hidden">
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p class="text-gray-600">Processing image...</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+                            <div id="progressFill" class="progress-fill h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="resultsSection" class="hidden">
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-blue-500"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-blue-700">
+                                    Successfully recognized the license plate!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Detected Plate</h3>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <img id="platePreview" src="#" alt="Plate" class="w-full h-auto rounded">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Plate Number</h3>
+                            <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-full">
+                                <p id="plateNumber" class="plate-display text-3xl font-bold text-gray-800">AB 1234 CD</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">Confidence Level</h3>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div id="confidenceBar" class="h-2.5 rounded-full bg-green-500" style="width: 92%"></div>
+                            </div>
+                            <span id="confidenceText" class="ml-2 text-sm font-medium text-gray-700">92%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center transition">
+                            <i class="fas fa-save mr-2"></i> Save Results
+                        </button>
+                        <button class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg flex items-center justify-center transition">
+                            <i class="fas fa-search mr-2"></i> Search Database
+                        </button>
+                        <button id="newRecognition" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg flex items-center justify-center transition">
+                            <i class="fas fa-redo mr-2"></i> New Recognition
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="emptyState" class="flex flex-col items-center justify-center py-12">
+                    <div class="bg-blue-100 p-4 rounded-full mb-4">
+                        <i class="fas fa-motorcycle text-blue-500 text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">No results yet</h3>
+                    <p class="text-gray-500 text-center max-w-xs">
+                        Upload a motorcycle image or use your camera to recognize the license plate.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Camera Modal -->
+        <div id="cameraModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Take Photo</h3>
+                    <button id="closeCamera" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-4">
+                    <div class="camera-view bg-black mb-4 relative">
+                        <video id="cameraFeed" autoplay playsinline class="w-full"></video>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="border-2 border-dashed border-white rounded-lg w-64 h-32"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button id="captureBtn" class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-gray-200 flex justify-end">
+                    <button id="usePhotoBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg hidden">
+                        Use This Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('fileInput');
+            const dropzone = document.getElementById('dropzone');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const cameraBtn = document.getElementById('cameraBtn');
+            const previewContainer = document.getElementById('previewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const clearPreview = document.getElementById('clearPreview');
+            const processBtn = document.getElementById('processBtn');
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const emptyState = document.getElementById('emptyState');
+            const platePreview = document.getElementById('platePreview');
+            const plateNumber = document.getElementById('plateNumber');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceText = document.getElementById('confidenceText');
+            const newRecognition = document.getElementById('newRecognition');
+            const cameraModal = document.getElementById('cameraModal');
+            const cameraFeed = document.getElementById('cameraFeed');
+            const captureBtn = document.getElementById('captureBtn');
+            const closeCamera = document.getElementById('closeCamera');
+            const usePhotoBtn = document.getElementById('usePhotoBtn');
+            const progressFill = document.getElementById('progressFill');
+            
+            let stream = null;
+            let capturedImage = null;
+            
+            // Event Listeners
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            dropzone.addEventListener('click', () => fileInput.click());
+            dropzone.addEventListener('dragover', handleDragOver);
+            dropzone.addEventListener('dragleave', handleDragLeave);
+            dropzone.addEventListener('drop', handleDrop);
+            clearPreview.addEventListener('click', resetPreview);
+            processBtn.addEventListener('click', processImage);
+            newRecognition.addEventListener('click', resetAll);
+            cameraBtn.addEventListener('click', openCamera);
+            closeCamera.addEventListener('click', closeCameraModal);
+            captureBtn.addEventListener('click', captureImage);
+            usePhotoBtn.addEventListener('click', useCapturedImage);
+            
+            // Functions
+            function handleFileSelect(e) {
+                const file = e.target.files[0] || (e.dataTransfer && e.dataTransfer.files[0]);
+                if (file && file.type.match('image.*')) {
+                    displayPreview(file);
+                }
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('active');
+            }
+            
+            function handleDragLeave(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('active');
+            }
+            
+            function handleDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('active');
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.match('image.*')) {
+                    displayPreview(file);
+                }
+            }
+            
+            function displayPreview(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                    processBtn.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+            
+            function resetPreview() {
+                fileInput.value = '';
+                imagePreview.src = '#';
+                previewContainer.classList.add('hidden');
+                processBtn.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            }
+            
+            function processImage() {
+                // Show loading state
+                loadingSection.classList.remove('hidden');
+                previewContainer.classList.add('hidden');
+                processBtn.classList.add('hidden');
+                
+                // Simulate processing with progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress > 100) progress = 100;
+                    progressFill.style.width = `${progress}%`;
+                    
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        setTimeout(showResults, 500);
+                    }
+                }, 200);
+                
+                // In a real app, you would send the image to a backend API for processing
+                // and handle the response to display actual results
+            }
+            
+            function showResults() {
+                loadingSection.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+                
+                // Simulate results - in a real app these would come from the API
+                platePreview.src = imagePreview.src;
+                
+                // Generate a random plate number for demo
+                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const numbers = '0123456789';
+                const randomPlate = 
+                    letters.charAt(Math.floor(Math.random() * letters.length)) +
+                    letters.charAt(Math.floor(Math.random() * letters.length)) + ' ' +
+                    numbers.charAt(Math.floor(Math.random() * numbers.length)) +
+                    numbers.charAt(Math.floor(Math.random() * numbers.length)) +
+                    numbers.charAt(Math.floor(Math.random() * numbers.length)) +
+                    numbers.charAt(Math.floor(Math.random() * numbers.length)) + ' ' +
+                    letters.charAt(Math.floor(Math.random() * letters.length)) +
+                    letters.charAt(Math.floor(Math.random() * letters.length));
+                
+                plateNumber.textContent = randomPlate;
+                
+                // Random confidence between 80-99%
+                const confidence = Math.floor(Math.random() * 20) + 80;
+                confidenceBar.style.width = `${confidence}%`;
+                confidenceText.textContent = `${confidence}%`;
+                
+                // Color based on confidence
+                if (confidence > 90) {
+                    confidenceBar.classList.remove('bg-yellow-500', 'bg-red-500');
+                    confidenceBar.classList.add('bg-green-500');
+                } else if (confidence > 80) {
+                    confidenceBar.classList.remove('bg-green-500', 'bg-red-500');
+                    confidenceBar.classList.add('bg-yellow-500');
+                } else {
+                    confidenceBar.classList.remove('bg-green-500', 'bg-yellow-500');
+                    confidenceBar.classList.add('bg-red-500');
+                }
+            }
+            
+            function resetAll() {
+                resetPreview();
+                resultsSection.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                progressFill.style.width = '0%';
+            }
+            
+            async function openCamera() {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    cameraFeed.srcObject = stream;
+                    cameraModal.classList.remove('hidden');
+                    usePhotoBtn.classList.add('hidden');
+                } catch (err) {
+                    alert('Could not access the camera. Please make sure you have granted camera permissions.');
+                    console.error('Camera error:', err);
+                }
+            }
+            
+            function closeCameraModal() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                cameraModal.classList.add('hidden');
+            }
+            
+            function captureImage() {
+                const canvas = document.createElement('canvas');
+                canvas.width = cameraFeed.videoWidth;
+                canvas.height = cameraFeed.videoHeight;
+                canvas.getContext('2d').drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+                
+                capturedImage = canvas.toDataURL('image/png');
+                usePhotoBtn.classList.remove('hidden');
+            }
+            
+            function useCapturedImage() {
+                imagePreview.src = capturedImage;
+                previewContainer.classList.remove('hidden');
+                processBtn.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                closeCameraModal();
+            }
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=prastya/plat-recognition" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
