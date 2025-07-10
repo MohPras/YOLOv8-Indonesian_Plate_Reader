@@ -46,7 +46,6 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
         <header class="text-center mb-12">
             <h1 class="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
                 <i class="fas fa-motorcycle mr-2"></i>Motorcycle Plate Recognition
@@ -56,8 +55,47 @@
             </p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Upload Section -->
+        <section class="text-center bg-blue-50 rounded-xl shadow-lg p-8 mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-blue-700 mb-4">
+                Deteksi Plat Nomor Sepeda Motor Otomatis
+            </h2>
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto mb-6">
+                Selamat datang di sistem **Motorcycle Plate Recognition**! Proyek ini dirancang untuk secara cerdas dan efisien mengidentifikasi plat nomor dari gambar sepeda motor menggunakan teknologi kecerdasan buatan (AI) terkini.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                    <i class="fas fa-camera text-3xl text-blue-500 mr-4 mt-1"></i>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Unggah atau Ambil Gambar</h3>
+                        <p class="text-gray-600">Anda dapat dengan mudah mengunggah gambar dari perangkat Anda atau mengambil foto langsung menggunakan kamera web.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                    <i class="fas fa-brain text-3xl text-green-500 mr-4 mt-1"></i>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Pengenalan Berbasis AI</h3>
+                        <p class="text-gray-600">Sistem kami memanfaatkan model AI canggih untuk secara akurat mendeteksi dan mengekstraksi karakter plat nomor.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                    <i class="fas fa-check-circle text-3xl text-purple-500 mr-4 mt-1"></i>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Hasil Cepat & Akurat</h3>
+                        <p class="text-gray-600">Dapatkan hasil identifikasi plat nomor dalam hitungan detik dengan tingkat akurasi yang tinggi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto mb-8">
+                Proyek ini sangat ideal untuk berbagai aplikasi, termasuk manajemen lalu lintas, keamanan kendaraan, atau sistem parkir otomatis. Cobalah sendiri dan rasakan kemudahannya!
+            </p>
+            
+            <a href="#upload-section" class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+                <i class="fas fa-rocket mr-2"></i> Mulai Sekarang!
+            </a>
+        </section>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="upload-section">
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">
                     <i class="fas fa-upload mr-2 text-blue-500"></i>Upload Image
@@ -96,7 +134,6 @@
                 </button>
             </div>
             
-            <!-- Results Section -->
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">
                     <i class="fas fa-search mr-2 text-blue-500"></i>Recognition Results
@@ -128,36 +165,42 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-medium text-gray-700 mb-2">Detected Plate</h3>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Original Image with Detection</h3>
                             <div class="bg-gray-100 p-4 rounded-lg">
-                                <img id="platePreview" src="#" alt="Plate" class="w-full h-auto rounded">
+                                <img id="originalImageWithBBox" src="#" alt="Original with Bounding Box" class="w-full h-auto rounded">
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-medium text-gray-700 mb-2">Plate Number</h3>
-                            <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-full">
-                                <p id="plateNumber" class="plate-display text-3xl font-bold text-gray-800">AB 1234 CD</p>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Recognized Plate Number</h3>
+                            <div class="bg-gray-100 p-4 rounded-lg flex flex-col items-center justify-center h-full">
+                                <p id="plateNumber" class="plate-display text-4xl font-bold text-gray-800 mb-2"></p>
+                                <button id="copyPlateBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm py-1 px-3 rounded-md flex items-center transition">
+                                    <i class="fas fa-copy mr-1"></i> Copy
+                                </button>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Confidence Level</h3>
-                        <div class="flex items-center">
-                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                <div id="confidenceBar" class="h-2.5 rounded-full bg-green-500" style="width: 92%"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Plate Details</h3>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-gray-700 mb-1"><span class="font-semibold">Vehicle Type:</span> Motorcycle</p>
+                                <p id="plateRegion" class="text-gray-700 mb-1"><span class="font-semibold">Region:</span> N/A</p>
+                                </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">Confidence Level</h3>
+                            <div class="flex items-center bg-gray-100 p-4 rounded-lg h-full">
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div id="confidenceBar" class="h-2.5 rounded-full bg-green-500" style="width: 0%"></div>
+                                </div>
+                                <span id="confidenceText" class="ml-2 text-sm font-medium text-gray-700">0%</span>
                             </div>
-                            <span id="confidenceText" class="ml-2 text-sm font-medium text-gray-700">92%</span>
                         </div>
                     </div>
                     
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center transition">
-                            <i class="fas fa-save mr-2"></i> Save Results
-                        </button>
-                        <button class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg flex items-center justify-center transition">
-                            <i class="fas fa-search mr-2"></i> Search Database
-                        </button>
                         <button id="newRecognition" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg flex items-center justify-center transition">
                             <i class="fas fa-redo mr-2"></i> New Recognition
                         </button>
@@ -176,7 +219,6 @@
             </div>
         </div>
         
-        <!-- Camera Modal -->
         <div id="cameraModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl">
                 <div class="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -208,35 +250,84 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
+        document.addEventListener('DOMContentLoaded', function () {
             const fileInput = document.getElementById('fileInput');
             const dropzone = document.getElementById('dropzone');
             const uploadBtn = document.getElementById('uploadBtn');
             const cameraBtn = document.getElementById('cameraBtn');
             const previewContainer = document.getElementById('previewContainer');
-            const imagePreview = document.getElementById('imagePreview');
+            const imagePreview = document.getElementById('imagePreview'); // Original image before processing
             const clearPreview = document.getElementById('clearPreview');
             const processBtn = document.getElementById('processBtn');
             const loadingSection = document.getElementById('loadingSection');
             const resultsSection = document.getElementById('resultsSection');
             const emptyState = document.getElementById('emptyState');
-            const platePreview = document.getElementById('platePreview');
+            const originalImageWithBBox = document.getElementById('originalImageWithBBox'); // Image with bounding box
             const plateNumber = document.getElementById('plateNumber');
+            const plateRegion = document.getElementById('plateRegion');
+            // Removed plateValidity as it's no longer used
             const confidenceBar = document.getElementById('confidenceBar');
             const confidenceText = document.getElementById('confidenceText');
             const newRecognition = document.getElementById('newRecognition');
+            const copyPlateBtn = document.getElementById('copyPlateBtn');
             const cameraModal = document.getElementById('cameraModal');
             const cameraFeed = document.getElementById('cameraFeed');
             const captureBtn = document.getElementById('captureBtn');
             const closeCamera = document.getElementById('closeCamera');
             const usePhotoBtn = document.getElementById('usePhotoBtn');
             const progressFill = document.getElementById('progressFill');
-            
+    
             let stream = null;
             let capturedImage = null;
-            
-            // Event Listeners
+    
+            // Plate region mapping (simplified for demo)
+            const plateRegions = {
+                "AD": "Solo dan sekitarnya (Jawa Tengah)",
+                "B": "Jakarta dan sekitarnya (Jawa Barat)",
+                "D": "Bandung dan sekitarnya (Jawa Barat)",
+                "F": "Bogor dan sekitarnya (Jawa Barat)",
+                "H": "Semarang dan sekitarnya (Jawa Tengah)",
+                "E": "Cirebon dan sekitarnya (Jawa Barat)",
+                "T": "Purwakarta, Karawang, Subang (Jawa Barat)",
+                "Z": "Tasikmalaya, Ciamis, Garut (Jawa Barat)",
+                "A": "Banten",
+                "AB": "Yogyakarta",
+                "BE": "Lampung",
+                "BG": "Sumatera Selatan",
+                "BH": "Jambi",
+                "BK": "Sumatera Utara",
+                "BM": "Riau",
+                "BN": "Bangka Belitung",
+                "BP": "Kepulauan Riau",
+                "BA": "Sumatera Barat",
+                "BD": "Bengkulu",
+                "DD": "Sulawesi Selatan",
+                "DK": "Bali",
+                "DR": "Nusa Tenggara Barat",
+                "EA": "Sumbawa (NTB)",
+                "ED": "Sumba (NTT)",
+                "KB": "Kalimantan Barat",
+                "KH": "Kalimantan Tengah",
+                "KT": "Kalimantan Timur",
+                "DA": "Kalimantan Selatan",
+                "DB": "Sulawesi Utara",
+                "DC": "Sulawesi Barat",
+                "DN": "Sulawesi Tengah",
+                "DT": "Sulawesi Tenggara",
+                "DG": "Maluku Utara",
+                "DE": "Maluku",
+                "PA": "Papua",
+                "L": "Surabaya (Jawa Timur)",
+                "M": "Madura (Jawa Timur)",
+                "N": "Malang (Jawa Timur)",
+                "P": "Jember (Jawa Timur)",
+                "S": "Tuban, Lamongan, Bojonegoro (Jawa Timur)",
+                "W": "Sidoarjo, Gresik (Jawa Timur)",
+                "AG": "Kediri (Jawa Timur)",
+                "AE": "Madiun (Jawa Timur)",
+                // Add more as needed
+            };
+
             uploadBtn.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', handleFileSelect);
             dropzone.addEventListener('click', () => fileInput.click());
@@ -246,131 +337,169 @@
             clearPreview.addEventListener('click', resetPreview);
             processBtn.addEventListener('click', processImage);
             newRecognition.addEventListener('click', resetAll);
+            copyPlateBtn.addEventListener('click', copyPlateNumber);
             cameraBtn.addEventListener('click', openCamera);
             closeCamera.addEventListener('click', closeCameraModal);
             captureBtn.addEventListener('click', captureImage);
             usePhotoBtn.addEventListener('click', useCapturedImage);
-            
-            // Functions
+    
             function handleFileSelect(e) {
                 const file = e.target.files[0] || (e.dataTransfer && e.dataTransfer.files[0]);
                 if (file && file.type.match('image.*')) {
                     displayPreview(file);
                 }
             }
-            
+    
             function handleDragOver(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 dropzone.classList.add('active');
             }
-            
+    
             function handleDragLeave(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 dropzone.classList.remove('active');
             }
-            
+    
             function handleDrop(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 dropzone.classList.remove('active');
-                
                 const file = e.dataTransfer.files[0];
                 if (file && file.type.match('image.*')) {
                     displayPreview(file);
                 }
             }
-            
+    
             function displayPreview(file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     imagePreview.src = e.target.result;
                     previewContainer.classList.remove('hidden');
                     processBtn.classList.remove('hidden');
                     emptyState.classList.add('hidden');
+                    resultsSection.classList.add('hidden'); // Hide results if new preview
                 }
                 reader.readAsDataURL(file);
             }
-            
+    
             function resetPreview() {
                 fileInput.value = '';
                 imagePreview.src = '#';
                 previewContainer.classList.add('hidden');
                 processBtn.classList.add('hidden');
                 emptyState.classList.remove('hidden');
+                resultsSection.classList.add('hidden');
+                // Reset also the results specific elements
+                originalImageWithBBox.src = '#';
+                plateNumber.textContent = '';
+                plateRegion.textContent = 'Region: N/A';
+                // Removed plateValidity reset
+                confidenceBar.style.width = '0%';
+                confidenceText.textContent = '0%';
             }
-            
-            function processImage() {
-                // Show loading state
+    
+            async function processImage() {
+                const file = fileInput.files[0];
+                if (!file) {
+                    alert("Please select an image first.");
+                    return;
+                }
+    
                 loadingSection.classList.remove('hidden');
                 previewContainer.classList.add('hidden');
                 processBtn.classList.add('hidden');
-                
-                // Simulate processing with progress
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * 10;
-                    if (progress > 100) progress = 100;
-                    progressFill.style.width = `${progress}%`;
-                    
-                    if (progress === 100) {
-                        clearInterval(interval);
-                        setTimeout(showResults, 500);
+                resultsSection.classList.add('hidden'); // Hide previous results
+    
+                const formData = new FormData();
+                formData.append("file", file);
+    
+                // Simulate progress bar (remove if your API provides real progress)
+                let currentProgress = 0;
+                const progressInterval = setInterval(() => {
+                    if (currentProgress < 90) { // Stop before 100% to simulate waiting for response
+                        currentProgress += 5;
+                        progressFill.style.width = `${currentProgress}%`;
                     }
                 }, 200);
-                
-                // In a real app, you would send the image to a backend API for processing
-                // and handle the response to display actual results
-            }
-            
-            function showResults() {
-                loadingSection.classList.add('hidden');
-                resultsSection.classList.remove('hidden');
-                
-                // Simulate results - in a real app these would come from the API
-                platePreview.src = imagePreview.src;
-                
-                // Generate a random plate number for demo
-                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                const numbers = '0123456789';
-                const randomPlate = 
-                    letters.charAt(Math.floor(Math.random() * letters.length)) +
-                    letters.charAt(Math.floor(Math.random() * letters.length)) + ' ' +
-                    numbers.charAt(Math.floor(Math.random() * numbers.length)) +
-                    numbers.charAt(Math.floor(Math.random() * numbers.length)) +
-                    numbers.charAt(Math.floor(Math.random() * numbers.length)) +
-                    numbers.charAt(Math.floor(Math.random() * numbers.length)) + ' ' +
-                    letters.charAt(Math.floor(Math.random() * letters.length)) +
-                    letters.charAt(Math.floor(Math.random() * letters.length));
-                
-                plateNumber.textContent = randomPlate;
-                
-                // Random confidence between 80-99%
-                const confidence = Math.floor(Math.random() * 20) + 80;
-                confidenceBar.style.width = `${confidence}%`;
-                confidenceText.textContent = `${confidence}%`;
-                
-                // Color based on confidence
-                if (confidence > 90) {
-                    confidenceBar.classList.remove('bg-yellow-500', 'bg-red-500');
-                    confidenceBar.classList.add('bg-green-500');
-                } else if (confidence > 80) {
-                    confidenceBar.classList.remove('bg-green-500', 'bg-red-500');
-                    confidenceBar.classList.add('bg-yellow-500');
-                } else {
-                    confidenceBar.classList.remove('bg-green-500', 'bg-yellow-500');
-                    confidenceBar.classList.add('bg-red-500');
+
+                try {
+                    const response = await fetch("http://127.0.0.1:8000/detect-plat", {
+                        method: "POST",
+                        body: formData
+                    });
+    
+                    clearInterval(progressInterval); // Stop simulation
+                    progressFill.style.width = '100%'; // Complete progress
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || "Failed to detect plate");
+                    }
+    
+                    const result = await response.json();
+    
+                    // Show result
+                    loadingSection.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+
+                    // Update image with bounding box (if provided by backend)
+                    if (result.plate_image_with_bbox) {
+                        originalImageWithBBox.src = `data:image/jpeg;base64,${result.plate_image_with_bbox}`;
+                    } else {
+                        // Fallback: if no bbox image, use original preview image
+                        originalImageWithBBox.src = imagePreview.src;
+                    }
+                    
+                    plateNumber.textContent = result.plate_number || "NOT DETECTED";
+
+                    // Update plate details
+                    const platePrefix = (result.plate_number || '').substring(0,2).toUpperCase();
+                    plateRegion.textContent = `Region: ${plateRegions[platePrefix] || 'Unknown'}`;
+                    // Removed setting plateValidity here
+    
+                    const confidence = result.confidence ? Math.round(result.confidence * 100) : (result.plate_number ? 90 : 60);
+                    confidenceBar.style.width = `${confidence}%`;
+                    confidenceText.textContent = `${confidence}%`;
+    
+                    confidenceBar.className = 'h-2.5 rounded-full ' +
+                        (confidence > 90 ? 'bg-green-500' :
+                            confidence > 70 ? 'bg-yellow-500' :
+                                'bg-red-500');
+                } catch (error) {
+                    clearInterval(progressInterval); // Ensure interval is cleared on error
+                    loadingSection.classList.add('hidden');
+                    alert("Error processing image: " + error.message);
+                    console.error(error);
+                    resetAll(); // Reset to empty state on error
                 }
             }
-            
+    
             function resetAll() {
-                resetPreview();
-                resultsSection.classList.add('hidden');
+                resetPreview(); // This also calls resultsSection.classList.add('hidden');
                 emptyState.classList.remove('hidden');
                 progressFill.style.width = '0%';
             }
-            
+
+            function copyPlateNumber() {
+                const textToCopy = plateNumber.textContent;
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        // Optional: Show a small success message
+                        const originalText = copyPlateBtn.innerHTML;
+                        copyPlateBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+                        setTimeout(() => {
+                            copyPlateBtn.innerHTML = originalText;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        alert('Failed to copy plate number.');
+                    });
+            }
+    
             async function openCamera() {
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -382,32 +511,41 @@
                     console.error('Camera error:', err);
                 }
             }
-            
+    
             function closeCameraModal() {
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
                 }
                 cameraModal.classList.add('hidden');
             }
-            
+    
             function captureImage() {
                 const canvas = document.createElement('canvas');
+                // Ensure canvas matches video dimensions for proper capture
                 canvas.width = cameraFeed.videoWidth;
                 canvas.height = cameraFeed.videoHeight;
                 canvas.getContext('2d').drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
-                
                 capturedImage = canvas.toDataURL('image/png');
                 usePhotoBtn.classList.remove('hidden');
             }
-            
+    
             function useCapturedImage() {
-                imagePreview.src = capturedImage;
-                previewContainer.classList.remove('hidden');
-                processBtn.classList.remove('hidden');
-                emptyState.classList.add('hidden');
-                closeCameraModal();
+                // Convert base64 to Blob to simulate file input for processing
+                fetch(capturedImage)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], "captured_image.png", { type: "image/png" });
+                        // Assign to fileInput.files to make it accessible by processImage
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+
+                        displayPreview(file); // Display the captured image
+                        closeCameraModal();
+                    });
             }
         });
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=prastya/plat-recognition" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+    
+</body>
 </html>

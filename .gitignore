@@ -1,0 +1,11 @@
+# Ignore macOS system files
+.DS_Store
+
+# Ignore Python virtual environment
+cv_venv/
+
+# Ignore Python cache
+__pycache__/
+
+# Optional: Jika kamu punya file log atau file sementara lain
+*.log
