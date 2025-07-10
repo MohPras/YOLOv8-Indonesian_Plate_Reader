@@ -1,6 +1,6 @@
 # YOLOv8 For Indonesian Plate Reader
 
-<img width="1619" alt="image" src="https://github.com/user-attachments/assets/260f82cb-3119-443f-b6a6-d829c155d8c2" />
+<img width="1458" alt="image" src="https://github.com/user-attachments/assets/048ce01e-94c3-4b54-8e92-e9bc7c0197db" />
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -9,6 +9,8 @@
 Identifikasi kendaraan secara otomatis menjadi kebutuhan penting dalam berbagai sistem modern, seperti parkir otomatis, sistem tilang elektronik (ETLE), hingga pemantauan lalu lintas berbasis kamera. Salah satu elemen kunci dari sistem ini adalah kemampuan untuk mendeteksi dan mengenali plat nomor kendaraan secara akurat dan efisien.
 
 Proyek ini bertujuan untuk membangun sistem yang mampu mendeteksi digit atau karakter pada plat nomor motor menggunakan pendekatan *object detection* berbasis deep learning. Dengan memanfaatkan algoritma *You Only Look Once* versi 8 (YOLOv8), sistem dibagi menjadi dua tahap utama, yaitu deteksi posisi plat nomor dan deteksi karakter (huruf dan angka) di dalam plat tersebut. Model dilatih pada dataset khusus yang terdiri dari berbagai citra kendaraan bermotor dan karakter plat, sehingga mampu mengenali format umum plat nomor Indonesia.
+
+<img width="1396" alt="image" src="https://github.com/user-attachments/assets/49220ce8-bdb0-4175-8960-1d2a41966fa1" />
 
 Hasil pelatihan dan pengujian menunjukkan bahwa pendekatan ini mampu memberikan akurasi tinggi serta kecepatan inferensi yang baik, menjadikannya cocok untuk implementasi real-time. Dengan sistem ini, diharapkan deteksi digit plat nomor motor dapat dilakukan secara otomatis, efisien, dan andal dalam berbagai kondisi pencahayaan maupun sudut pandang kamera.
 
@@ -349,7 +351,6 @@ Model dinilai **layak untuk diimplementasikan pada aplikasi nyata** dalam deteks
 Proyek ini bertujuan untuk membangun sistem deteksi digit pada plat nomor motor dengan memanfaatkan dua tahap deteksi berbasis *You Only Look Once* (YOLO). Sistem ini dirancang agar mampu mendeteksi area plat nomor terlebih dahulu, kemudian mengenali digit atau karakter di dalam plat tersebut secara terpisah, sehingga meningkatkan akurasi dan keandalan deteksi.
 
 <img width="697" alt="image" src="https://github.com/user-attachments/assets/de3225f5-7aa0-45ec-ad91-dc1f99b1f161" />
-
 
 #### **Tahap 1 — Deteksi Plat Nomor**
 
